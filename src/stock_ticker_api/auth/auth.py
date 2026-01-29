@@ -23,14 +23,12 @@ def verify_credentials(username: str, password: str) -> None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
 
-# For normal HTTP endpoints later
 def require_http_basic(creds: HTTPBasicCredentials = Depends(security)) -> str:
     verify_credentials(creds.username, creds.password)
     return creds.username
 
 
 def _parse_basic_auth_header(value: str) -> tuple[str, str] | None:
-    # Expected: "Basic base64(username:password)"
     parts = value.split(" ", 1)
     if len(parts) != 2 or parts[0].lower() != "basic":
         return None
@@ -47,7 +45,6 @@ def _parse_basic_auth_header(value: str) -> tuple[str, str] | None:
 
 
 async def require_ws_auth(websocket: WebSocket) -> str:
-    # 1) Prefer real HTTP Basic header
     auth = websocket.headers.get("authorization")
     if auth:
         parsed = _parse_basic_auth_header(auth)
@@ -56,12 +53,10 @@ async def require_ws_auth(websocket: WebSocket) -> str:
             verify_credentials(username, password)
             return username
 
-    # 2) Fallback for browser clients: ws://.../ws/ticker?username=...&password=...
     username = websocket.query_params.get("username")
     password = websocket.query_params.get("password")
     if username and password:
         verify_credentials(username, password)
         return username
 
-    # If neither method provided valid credentials
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing/invalid WebSocket auth")
