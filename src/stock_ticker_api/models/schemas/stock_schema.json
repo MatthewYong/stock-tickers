@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stock",
+  "type": "object",
+  "properties": {
+    "symbol": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "change": {
+      "type": "number"
+    },
+    "percent_change": {
+      "type": "number"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "symbol",
+    "price",
+    "change",
+    "percent_change",
+    "last_updated"
+  ]
+}
