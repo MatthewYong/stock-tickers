@@ -24,17 +24,17 @@ This project is intended as an **introductory Python upskilling task**.
 
 **Windows**
 
-python -m venv .venv
+- python -m venv .venv
 .venv\Scripts\activate
 
 **macOS/Linux**
 
-python3 -m venv .venv
+- python3 -m venv .venv
 source .venv/bin/activate
 
 ### 2. Install dependencies
 
-pip install -r requirements.txt
+- pip install -r requirements.txt
 
 ### 3. Generate Pydantic models form JSON Schema
 
@@ -43,8 +43,9 @@ Use: **python scripts/generate_models.py** to (re)generate them.
 
 ### 4. Run the API
 
-uvicorn stock_ticker_api.main:app --reload
-
+```javascript
+uvicorn stock_ticker_api.main:app --reload 
+```
 ---
 
 ## Authentication
@@ -58,30 +59,27 @@ Default credentials:
 
 ---
 
-### How to test it
-#### Through DevConsole
+## How To Test
 
-1. Open: Developer Tools in Browser
-2. Go to Console and paste:
+1. Open a Terminal
+2. Paste:
 ```javascript
-const ws = new WebSocket(
-    "ws://127.0.0.1:8000/ws/ticker?username=admin&password=changeme"
-    );
+uvicorn stock_ticker_api.main:app --reload 
+```
 
-    ws.onmessage = (event) => {
-    console.log("UPDATE:", event.data);
-    };
-    
-    ws.onopen = () => {
-    console.log("CONNECTED");
-    };
-
-    ws.onclose = () => {
-        console.log("DISCONNECTED");
-    };
+2. Open a another new Terminal 
+3. Paste:
+```javascript
+wscat -c ws://127.0.0.1:8000/ws/ticker -H "Authorization: Basic YWRtaW46Y2hhbmdlbWU="   
 ```
 
 4. The WebSocket connection is now open and streaming updates.
 5. Press **Ctrl+C** in the terminal to stop the server. The WebSocket will automatically disconnect.
 
 
+Example output:
+```javascript
+{"symbol":"MSFT","price":250.859,"change":0.1034,"percent_change":0.04124,"last_updated":"2026-01-29T15:43:30.625232Z"}
+{"symbol":"TSLA","price":160.01867,"change":0.92022,"percent_change":0.5784,"last_updated":"2026-01-29T15:43:32.631756Z"}
+{"symbol":"EURUSD","price":130.8956,"change":0.78899,"percent_change":0.60642,"last_updated":"2026-01-29T15:43:34.639709Z"}
+```
